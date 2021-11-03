@@ -1,11 +1,11 @@
-package main_test
+package main
 
 import (
 	"strings"
 
 	. "utils/fakes"
 
-	. "github.com/SAP/cf-cli-java-plugin"
+	// . "github.com/SAP/cf-cli-java-plugin"
 
 	io_helpers "code.cloudfoundry.org/cli/cf/util/testhelpers/io"
 	. "github.com/SAP/cf-cli-java-plugin/cmd/fakes"
@@ -134,7 +134,7 @@ var _ = Describe("CfJavaPlugin", func() {
 					defer close(done)
 
 					output, err, cliOutput := captureOutput(func() (string, error) {
-						output, err := subject.DoRun(commandExecutor, uuidGenerator, []string{"java", "heap-dump"})
+						output, err := subject.DoRun(commandExecutor, uuidGenerator, pluginUtil, []string{"java", "heap-dump"})
 						return output, err
 					})
 

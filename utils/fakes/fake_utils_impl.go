@@ -69,14 +69,27 @@ func (fake FakeCfJavaPluginUtil) DeleteRemoteFile(app string, path string) error
 	return nil
 }
 
-func (fake FakeCfJavaPluginUtil) FindDumpFile(app string, path string) (string, error) {
-	cmd := " [ -f '" + path + "' ] && echo '" + path + "' ||  find -name 'java_pid*.hprof' -printf '%T@ %p\\0' | sort -zk 1nr | sed -z 's/^[^ ]* //' | tr '\\0' '\\n' | head -n 1  "
+// func (fake FakeCfJavaPluginUtil) FindDumpFile(app string, path string, fspath string) (string, error) {
+// 	cmd := " [ -f '" + path + "' ] && echo '" + path + "' ||  find -name 'java_pid*.hprof' -printf '%T@ %p\\0' | sort -zk 1nr | sed -z 's/^[^ ]* //' | tr '\\0' '\\n' | head -n 1  "
+
+// 	output, err := exec.Command("cf", "ssh", app, "-c", cmd).Output()
+
+// 	if err != nil {
+// 		return "", errors.New("error occured while checking the generated file")
+
+// 	}
+
+// 	return strings.Trim(string(output[:]), "\n"), nil
+
+// }
+
+func (checker FakeCfJavaPluginUtil) FindDumpFile(app string, fullpath string, fspath string) (string, error) {
+	cmd := " [ -f '" + fullpath + "' ] && echo '" + fullpath + "' ||  find " + fspath + " -name 'java_pid*.hprof' -printf '%T@ %p\\0' | sort -zk 1nr | sed -z 's/^[^ ]* //' | tr '\\0' '\\n' | head -n 1  "
 
 	output, err := exec.Command("cf", "ssh", app, "-c", cmd).Output()
 
 	if err != nil {
-		return "", errors.New("error occured while checking the generated file")
-
+		return "", errors.New("error while checking the generated file" + (err.Error()))
 	}
 
 	return strings.Trim(string(output[:]), "\n"), nil
